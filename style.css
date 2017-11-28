@@ -1,0 +1,130 @@
+	  body {
+	  	margin: 0;
+	  	padding: 0;
+	  }
+
+	  #testProgress {
+	    width: 300px;
+      height: 300px;
+      position: relative;
+      top: 50%;
+      margin-top: -150px;
+      left: 50%;
+      margin-left: -150px;
+	  }
+    
+    #b_ProgressTop, #b_ProgressBottom {
+    	margin: 0;
+    	padding: 0;
+    	display: block;
+    }
+
+    #b_ProgressBottom .b_center {
+    	width: 150px;
+      position: relative;
+      height: 100px;
+      top: 50%;
+      margin-top: -75px;
+      left: 50%;
+      margin-left: -75px;
+
+    }
+    
+    #b_ProgressBottom .b_center table {
+      font-size: 27px;
+      font-weight: bold;
+    }
+
+    #b_ProgressBottom .b_center table #js_data{
+      width: 90px;
+      height: 40px;
+      text-align: center;
+      border: 4px #000000 solid;
+      border-radius: 40px;
+      font-size: 31px;
+    }
+
+    .switch {
+      margin: 9px auto;
+      position: relative;
+    }
+
+    .switch label {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      display: block;
+    }
+
+    .switch input {
+      top: 0px;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      opacity: 0;
+      z-index: 100;
+      position: absolute;
+      width: 102px;
+      height: 53px;
+      cursor: pointer;
+    }
+
+
+    .switch.animate, .switch.hide {
+      width: 97px;
+      height: 50px;
+    }
+
+    .switch.animate label, .switch.hide label {
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: #4a4a4a;
+      border-radius: 40px;
+    }
+
+    .switch.animate label i, .switch.hide label i {
+      display: block;
+      height: 47px;
+      width: 50px;
+      margin-top: 1px;
+      border-radius: inherit;
+      position: absolute;
+      z-index: 2;
+      right: 45%;
+      top: 0;
+      background: #d8d8d8;
+    }
+
+    .switch.animate input:checked ~ label, .switch.hide input:checked ~ label {
+      background: #7ed321;
+    }
+
+    .switch.animate input:checked ~ label i, .switch.hide input:checked ~ label i {
+      right: 3px;
+      background-color: #fff;
+    }
+
+		@media screen and (orientation:portrait) {
+			#b_ProgressTop, #b_ProgressBottom {
+        width: 100%;
+    	  height: 50%;
+    	  position: absolute;
+			}
+
+      #b_ProgressBottom {
+      	top: 50%;
+      }
+		}
+
+    @media screen and (orientation:landscape) {
+			#b_ProgressTop, #b_ProgressBottom {
+        width: 50%;
+    	  height: 100%;
+    	  position: absolute;
+			}
+
+      #b_ProgressBottom {
+        left: 50%;
+      }
+    }

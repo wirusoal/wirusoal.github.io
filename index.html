@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link type="text/css" href="style.css" media="all" rel="stylesheet">
+</head>
+<body>
+
+<div id="b_ProgressTop">
+	<div id="testProgress"></div>
+</div>
+<div id="b_ProgressBottom">
+	<div class="b_center">
+		<table>
+      <tr>
+        <td><input type="text" id="js_data" value="0"></td>
+        <td>Value</td>
+      </tr>
+      <tr>
+        <td>
+        	<div class="switch animate">
+	          <input type="checkbox" id="js_animate">
+	          <label><i></i></label>
+          </div>	
+        </td>
+        <td>Animate</td>
+      </tr>
+      <tr>
+        <td>
+        	<div class="switch hide">
+	          <input type="checkbox" id="js_hide">
+	          <label><i></i></label>
+          </div>	
+        </td>
+        <td>Hide</td>
+      </tr>
+    </table>
+	</div>
+</div>
+	<!-- Подгружаем наш модуль -->
+  <script type="text/javascript" src="progress.js"></script>
+  <script type="text/javascript">
+  	var timer;
+    var newDiv = new Progress.Init({
+      container: 'testProgress'
+    });
+
+    // newDiv.draw();
+
+    var js_data = document.getElementById('js_data');
+    js_data.oninput = function() {
+    	if(js_data.value > 100){
+    		newDiv.draw(100);
+    	}else{
+        newDiv.draw(js_data.value);
+      }
+    };
+    
+    var js_animate = document.getElementById('js_animate');
+    js_animate.onchange = function() {
+      if(js_animate.checked){
+      	js_data.disabled="disabled";
+        timer = setInterval(function() {
+        	if(js_data.value > 99) { js_data.value = 0};
+          newDiv.draw(js_data.value);
+          js_data.value=parseInt(js_data.value)+1;
+        }, 90);
+      }else{
+      	js_data.disabled = "";
+        clearInterval(timer);
+      }
+    };
+
+    var js_hide = document.getElementById('js_hide');
+    js_hide.onchange = function() {
+      // alert( js_hide.checked );
+      newDiv.hide(js_hide.checked)
+    };
+  </script>
+</body>
+</html>
