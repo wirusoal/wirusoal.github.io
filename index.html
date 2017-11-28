@@ -41,13 +41,16 @@
   <script type="text/javascript" src="progress.js"></script>
   <script type="text/javascript">
   	var timer;
+  	//Инициализируем наш модуль и привязываем его к контейнеру #testProgress
+  	//Progress принимает значения ширины и высоты контейнера в котором находится
     var newDiv = new Progress.Init({
       container: 'testProgress'
     });
 
-    // newDiv.draw();
+    // newDiv.draw(процент);
+    // newDiv.hide(boolean); скрывает или показывает меняем boolean на true или false
 
-    var js_data = document.getElementById('js_data');
+    var js_data = document.getElementById('js_data'); // передает данные из input в наш progress
     js_data.oninput = function() {
     	if(js_data.value > 100){
     		newDiv.draw(100);
@@ -56,7 +59,7 @@
       }
     };
     
-    var js_animate = document.getElementById('js_animate');
+    var js_animate = document.getElementById('js_animate'); // Анимация загрузки
     js_animate.onchange = function() {
       if(js_animate.checked){
       	js_data.disabled="disabled";
@@ -71,9 +74,8 @@
       }
     };
 
-    var js_hide = document.getElementById('js_hide');
+    var js_hide = document.getElementById('js_hide'); // Скрывает или показывает блок
     js_hide.onchange = function() {
-      // alert( js_hide.checked );
       newDiv.hide(js_hide.checked)
     };
   </script>
