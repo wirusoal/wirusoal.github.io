@@ -1,83 +1,137 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
 	<title></title>
-	<link type="text/css" href="style.css" media="all" rel="stylesheet">
+    <script src="script/jquery.min.js"></script>
+    <script src="script/CODE128.js"></script>
+    <script src="script/JsBarcode.js"></script>
+    <style type="text/css">
+        #scanner-input {
+            position: absolute;
+            left: -1000px;
+        }
+
+        #start {
+            position: absolute;
+            top: 50%;
+            right: 50%;
+            margin-top: -34px;
+            margin-right: -211px;
+            text-align: center;
+            font-size: 50px;
+        }
+
+        #ball {
+            font-size: 26px;
+            font-weight: bold;
+            color: #909090;
+            position: absolute;
+            right: 11px;
+        }
+
+        #dialog {
+            position: absolute;
+            top: 50%;
+            right: 50%;
+            margin-top: -198px;
+            margin-right: -350px;
+            display: none;
+        }
+    </style>
 </head>
 <body>
+<div id="dialog"><img src="image/finish.jpg"></div>
+<div id="ball"></div>
 
-<div id="b_ProgressTop">
-	<div id="testProgress"></div>
-</div>
-<div id="b_ProgressBottom">
-	<div class="b_center">
-		<table>
-      <tr>
-        <td><input type="text" id="js_data" value="0"></td>
-        <td>Value</td>
-      </tr>
-      <tr>
-        <td>
-        	<div class="switch animate">
-	          <input type="checkbox" id="js_animate">
-	          <label><i></i></label>
-          </div>	
-        </td>
-        <td>Animate</td>
-      </tr>
-      <tr>
-        <td>
-        	<div class="switch hide">
-	          <input type="checkbox" id="js_hide">
-	          <label><i></i></label>
-          </div>	
-        </td>
-        <td>Hide</td>
-      </tr>
-    </table>
-	</div>
-</div>
-	<!-- Подгружаем наш модуль -->
-  <script type="text/javascript" src="progress.js"></script>
-  <script type="text/javascript">
-  	var timer;
-  	//Инициализируем наш модуль и привязываем его к контейнеру #testProgress
-  	//Progress принимает значения ширины и высоты контейнера в котором находится
-    var newDiv = new Progress.Init({
-      container: 'testProgress'
+<div id="snow"></div>
+
+<div id="start">Начали!<br><img src="image/start.png"></div>  
+<input type="text" id="scanner-input">
+
+<script type="text/javascript">
+$(document).ready(function() {
+	let count_finish = 40; // До скольки играем, игра начинается от count_finish/2 
+	let timer_show = [200, 600]; // Как быстро появляются штрих-коды. Значение рандомно берется от 200 до 600 мс
+    let timer_hide = [1200, 3500]; // Тоже самое, но с исчезновением
+	let barcode, count;
+    let start = false;
+
+    function randomInteger(min, max) {
+        let rand = min - 0.5 + Math.random() * (max - min + 1);
+        return Math.round(rand);
+    }
+
+    function dialog_show(img) {
+    	start=false;
+        $("#snow").remove();
+        $("#ball").remove();
+        $("#dialog > img").attr("src", img);
+        $("#dialog").show();
+
+    }
+
+    function update_ball(){
+    	$("#ball").html(count + '/' + count_finish);
+    }
+
+    function snow(id) {
+        var img = "<img id='snow_" + id + "' style='left:" + randomInteger(0, $(document).width()-270) + "px; top:"+randomInteger(0, $(document).height()-20)+"px; position:fixed;' data='" + id + "' src=''/>";
+        $("#snow").append(img);
+        setTimeout(function() {
+            if($("#snow_" + id).length == 1){
+              $("#snow_" + id).empty().remove();
+              count -=1;
+              update_ball();
+              if(count < 0){ dialog_show("image/game_over.jpg"); }
+            }
+        }, randomInteger(timer_hide[0], timer_hide[1]));
+    }
+
+    function genegate(id) {
+        snow(id)
+        $("#snow_" + id).JsBarcode(id, {
+            lineColor: "#000",
+            background: "#ffffff",
+            width: 3,
+            height: 20
+        });
+        if (start) {
+            setTimeout(function() {
+                genegate(randomInteger(100, 10000)+""+randomInteger(100, 10000));
+            }, randomInteger(timer_show[0], timer_show[1]));
+        }
+    }
+
+    $("#scanner-input").focus().on("input", function() {
+        barcode = $("#scanner-input").val();
+    }).blur(function() {
+        $("#scanner-input").focus();
+    }).on('keypress', function(e) {
+        if (e.key == 'Enter') {
+            $("#scanner-input").val("");
+            console.info(barcode)
+            if (barcode == '123456789') { // штрих-код для старта,хранится в папке image
+            	count = count_finish /2;
+                $("#start").remove();
+                start = true;
+                genegate("startStart");
+            }
+
+            if (start == true) {
+                if($("img[data='" + barcode + "']").length == 1){
+                   $("img[data='" + barcode + "']").remove();
+                    count +=1;
+                    update_ball();
+                    if(count > count_finish-1){ dialog_show("image/finish.jpg"); }
+                }
+                
+            }
+            barcode = '';
+        }
     });
+});
 
-    // newDiv.draw(процент);
-    // newDiv.hide(boolean); скрывает или показывает меняем boolean на true или false
 
-    var js_data = document.getElementById('js_data'); // передает данные из input в наш progress
-    js_data.oninput = function() {
-    	if(js_data.value > 100){
-    		newDiv.draw(100);
-    	}else{
-        newDiv.draw(js_data.value);
-      }
-    };
-    
-    var js_animate = document.getElementById('js_animate'); // Анимация загрузки
-    js_animate.onchange = function() {
-      if(js_animate.checked){
-      	js_data.disabled="disabled";
-        timer = setInterval(function() {
-        	if(js_data.value > 99) { js_data.value = 0};
-          newDiv.draw(js_data.value);
-          js_data.value=parseInt(js_data.value)+1;
-        }, 90);
-      }else{
-      	js_data.disabled = "";
-        clearInterval(timer);
-      }
-    };
-
-    var js_hide = document.getElementById('js_hide'); // Скрывает или показывает блок
-    js_hide.onchange = function() {
-      newDiv.hide(js_hide.checked)
-    };
-  </script>
+</script>
 </body>
 </html>
